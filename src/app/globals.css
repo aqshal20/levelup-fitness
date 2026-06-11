@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: #050505;
+  --color-foreground: #ededed;
+  
+  --color-system-blue: #00EAFF;
+  --color-system-purple: #BC13FE;
+  --color-system-black: #0A0A0A;
+  --color-system-gray: #1A1A1A;
+  
+  --shadow-neon-blue: 0 0 10px rgba(0, 234, 255, 0.5), 0 0 20px rgba(0, 234, 255, 0.3);
+  --shadow-neon-purple: 0 0 10px rgba(188, 19, 254, 0.5), 0 0 20px rgba(188, 19, 254, 0.3);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #050505;
+  --foreground: #ededed;
+  --system-blue: #00EAFF;
+  --system-purple: #BC13FE;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-lg;
+  }
+  
+  .neon-border-blue {
+    @apply border border-system-blue shadow-[var(--shadow-neon-blue)];
+  }
+  
+  .neon-border-purple {
+    @apply border border-system-purple shadow-[var(--shadow-neon-purple)];
+  }
+  
+  .text-neon-blue {
+    @apply text-system-blue shadow-[var(--shadow-neon-blue)];
+  }
+  
+  .system-font {
+    font-family: 'Orbitron', var(--font-sans);
+  }
 }
