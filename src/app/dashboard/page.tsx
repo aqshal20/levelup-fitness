@@ -3,16 +3,19 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useHunterStore } from '@/store/useHunterStore';
-import { Shield, Zap, Activity, Brain, Dumbbell, ChevronRight, PlusCircle, Target, Flame, Calendar, RefreshCw, Scale } from 'lucide-react';
+import { Shield, Zap, Activity, Brain, Dumbbell, ChevronRight, PlusCircle, Target, Flame, Calendar, RefreshCw, Scale, TrendingUp } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Link from 'next/link';
 
 export default function Dashboard() {
-  const { name, level, rank, xp, stats, statPoints, allocateStat, goalType, targetDate, streak, trainingDays, resetSystem, bmi, bmiStatus, weight, height } = useHunterStore();
+  const { name, level, rank, xp, stats, statPoints, allocateStat, goalType, targetDate, streak, trainingDays, resetSystem, bmi, bmiStatus, weight, height, weightHistory, updateWeight } = useHunterStore();
   const [isMounted, setIsMounted] = useState(false);
+  const [newWeight, setNewWeight] = useState(0);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    setNewWeight(weight);
+  }, [weight]);
 
   if (!isMounted) return <div className="min-h-screen bg-black" />;
 
@@ -173,6 +176,86 @@ export default function Dashboard() {
           </div>
         </motion.div>
       </div>
+
+      {/* Weight Progress Chart */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-4xl mx-auto glass-panel p-8 mb-8 border-system-blue/30 relative"
+      >
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <TrendingUp className="text-system-blue" size={18} />
+              <h3 className="font-bold system-font text-lg tracking-wider uppercase">WEIGHT PROGRESSION</h3>
+            </div>
+            <p className="text-gray-400 text-sm">Tracking your physical transformation journey.</p>
+          </div>
+          <div className="flex items-center gap-4 bg-white/5 p-2 rounded border border-white/10 w-full md:w-auto">
+            <input 
+              type="number" 
+              value={newWeight || ''}
+              onChange={(e) => setNewWeight(Number(e.target.value))}
+              className="bg-transparent w-full md:w-20 text-center font-bold text-xl outline-none text-system-blue"
+              placeholder="0"
+            />
+            <button 
+              onClick={() => updateWeight(newWeight)}
+              className="bg-system-blue text-black px-6 py-2 font-bold system-font text-xs tracking-widest hover:bg-white transition-all w-full md:w-auto"
+            >
+              UPDATE
+            </button>
+          </div>
+        </div>
+
+        <div className="h-64 w-full">
+          {weightHistory && weightHistory.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={weightHistory}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#444" 
+                  fontSize={10}
+                  tickFormatter={(str) => {
+                    try {
+                      const date = new Date(str);
+                      return `${date.getDate()}/${date.getMonth() + 1}`;
+                    } catch {
+                      return str;
+                    }
+                  }}
+                  tickMargin={10}
+                />
+                <YAxis 
+                  stroke="#444" 
+                  fontSize={10} 
+                  domain={['dataMin - 2', 'dataMax + 2']}
+                  tickMargin={10}
+                />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#0A0A0A', border: '1px solid rgba(0,234,255,0.2)', borderRadius: '4px' }}
+                  itemStyle={{ color: '#00EAFF', fontSize: '12px' }}
+                  labelStyle={{ color: '#666', fontSize: '10px', marginBottom: '4px' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="weight" 
+                  stroke="#00EAFF" 
+                  strokeWidth={3} 
+                  dot={{ fill: '#00EAFF', r: 4, strokeWidth: 0 }}
+                  activeDot={{ r: 6, stroke: '#FFF', strokeWidth: 2 }}
+                  animationDuration={1500}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center text-gray-700 font-mono text-xs uppercase tracking-widest italic">
+              [ No historical data available for synchronization ]
+            </div>
+          )}
+        </div>
+      </motion.div>
 
       {/* The Great Quest (Long term Goal) */}
       <motion.div

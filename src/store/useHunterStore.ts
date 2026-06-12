@@ -29,6 +29,7 @@ interface HunterState {
   quests: { id: number; title: string; goal: number; unit?: string; xp: number; completed: boolean }[];
   bmi: number;
   bmiStatus: string;
+  weightHistory: { date: string; weight: number }[];
   
   // Actions
   setName: (name: string) => void;
@@ -42,6 +43,7 @@ interface HunterState {
   completeAllQuests: () => void;
   resetSystem: () => void;
   generateQuests: () => void;
+  updateWeight: (weight: number) => void;
 }
 
 const questPool = {
@@ -109,6 +111,7 @@ export const useHunterStore = create<HunterState>()(
       quests: [],
       bmi: 0,
       bmiStatus: '',
+      weightHistory: [],
 
       setName: (name) => set({ name }),
       setProfile: (profile) => {
@@ -125,7 +128,27 @@ export const useHunterStore = create<HunterState>()(
           else status = 'OBESE';
         }
         
-        set((state) => ({ ...state, ...profile, bmi, bmiStatus: status }));
+        const today = new Date().toISOString().split('T')[0];
+        
+        set((state) => {
+          const newHistory = [...state.weightHistory];
+          if (w > 0) {
+            const existingIdx = newHistory.findIndex(e => e.date === today);
+            if (existingIdx >= 0) {
+              newHistory[existingIdx].weight = w;
+            } else {
+              newHistory.push({ date: today, weight: w });
+            }
+          }
+          
+          return { 
+            ...state, 
+            ...profile, 
+            bmi, 
+            bmiStatus: status, 
+            weightHistory: newHistory.sort((a, b) => a.date.localeCompare(b.date)) 
+          };
+        });
         get().generateQuests();
       },
       addXp: (amount) => set((state) => {
@@ -195,6 +218,38 @@ export const useHunterStore = create<HunterState>()(
       resetSystem: () => {
         localStorage.removeItem('hunter-storage');
         window.location.reload();
+      },
+      updateWeight: (w) => {
+        const today = new Date().toISOString().split('T')[0];
+        const h = get().height;
+        let bmi = 0;
+        let status = '';
+        
+        if (h > 0 && w > 0) {
+          bmi = Number((w / ((h / 100) * (h / 100))).toFixed(1));
+          if (bmi < 18.5) status = 'UNDERWEIGHT';
+          else if (bmi < 25) status = 'IDEAL';
+          else if (bmi < 30) status = 'OVERWEIGHT';
+          else status = 'OBESE';
+        }
+
+        set((state) => {
+          const newHistory = [...state.weightHistory];
+          const existingIdx = newHistory.findIndex(e => e.date === today);
+          if (existingIdx >= 0) {
+            newHistory[existingIdx].weight = w;
+          } else {
+            newHistory.push({ date: today, weight: w });
+          }
+          
+          return {
+            ...state,
+            weight: w,
+            bmi,
+            bmiStatus: status,
+            weightHistory: newHistory.sort((a, b) => a.date.localeCompare(b.date))
+          };
+        });
       },
       generateQuests: () => {
         const state = get();
