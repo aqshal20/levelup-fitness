@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useHunterStore } from '@/store/useHunterStore';
-import { Shield, Sword, Activity, ChevronRight, Loader2, Target, Calendar } from 'lucide-react';
+import { Shield, Sword, Activity, ChevronRight, Loader2, Target, Calendar, Info } from 'lucide-react';
 
 export default function Onboarding() {
   const [step, setStep] = useState(1);
@@ -23,6 +23,21 @@ export default function Onboarding() {
     goalDuration: 3,
     trainingDays: [1, 2, 3, 4, 5]
   });
+
+  const [bmiInfo, setBmiInfo] = useState({ value: 0, status: '' });
+
+  useEffect(() => {
+    if (formData.height > 0 && formData.weight > 0) {
+      const h = formData.height / 100;
+      const bmi = Number((formData.weight / (h * h)).toFixed(1));
+      let status = '';
+      if (bmi < 18.5) status = 'UNDERWEIGHT';
+      else if (bmi < 25) status = 'IDEAL';
+      else if (bmi < 30) status = 'OVERWEIGHT';
+      else status = 'OBESE';
+      setBmiInfo({ value: bmi, status });
+    }
+  }, [formData.height, formData.weight]);
 
   const nextStep = () => setStep(s => s + 1);
 
@@ -86,33 +101,63 @@ export default function Onboarding() {
                   <input 
                     type="text" 
                     placeholder="E.g. Sung Jin-Woo"
-                    className="w-full bg-system-gray border border-white/10 p-4 rounded focus:border-system-blue outline-none transition-all"
+                    className="w-full bg-system-gray border border-white/10 p-4 rounded focus:border-system-blue outline-none transition-all text-white"
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs uppercase tracking-widest mb-2 text-gray-500">Current Weight (kg)</label>
+                    <label className="block text-xs uppercase tracking-widest mb-2 text-gray-500">Height (cm)</label>
                     <input 
                       type="number" 
-                      className="w-full bg-system-gray border border-white/10 p-4 rounded focus:border-system-blue outline-none transition-all"
-                      onChange={(e) => setFormData({...formData, weight: Number(e.target.value)})}
+                      placeholder="175"
+                      className="w-full bg-system-gray border border-white/10 p-4 rounded focus:border-system-blue outline-none transition-all text-white"
+                      onChange={(e) => setFormData({...formData, height: Number(e.target.value)})}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs uppercase tracking-widest mb-2 text-gray-500">Target Weight (kg)</label>
+                    <label className="block text-xs uppercase tracking-widest mb-2 text-gray-500">Weight (kg)</label>
                     <input 
                       type="number" 
-                      className="w-full bg-system-gray border border-white/10 p-4 rounded focus:border-system-blue outline-none transition-all"
-                      onChange={(e) => setFormData({...formData, targetWeight: Number(e.target.value)})}
+                      placeholder="70"
+                      className="w-full bg-system-gray border border-white/10 p-4 rounded focus:border-system-blue outline-none transition-all text-white"
+                      onChange={(e) => setFormData({...formData, weight: Number(e.target.value)})}
                     />
                   </div>
+                </div>
+
+                {bmiInfo.value > 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded border border-system-blue/30 bg-system-blue/5 flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">System Analysis: BMI</div>
+                      <div className={`font-bold system-font ${
+                        bmiInfo.status === 'IDEAL' ? 'text-green-500' : 'text-yellow-500'
+                      }`}>
+                        {bmiInfo.value} - {bmiInfo.status}
+                      </div>
+                    </div>
+                    <Info className="text-system-blue/50" size={20} />
+                  </motion.div>
+                )}
+
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2 text-gray-500">Target Weight (kg)</label>
+                  <input 
+                    type="number" 
+                    placeholder="65"
+                    className="w-full bg-system-gray border border-white/10 p-4 rounded focus:border-system-blue outline-none transition-all text-white"
+                    onChange={(e) => setFormData({...formData, targetWeight: Number(e.target.value)})}
+                  />
                 </div>
               </div>
 
               <button 
                 onClick={nextStep}
-                disabled={!formData.name || !formData.weight}
+                disabled={!formData.name || !formData.weight || !formData.height}
                 className="w-full py-4 bg-system-blue text-black font-bold system-font tracking-widest disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 PROCEED <ChevronRight size={18} />
@@ -250,8 +295,8 @@ export default function Onboarding() {
                         : 'border-white/10 bg-system-gray hover:border-white/20'
                     }`}
                   >
-                    <span>{item}</span>
-                    <Sword size={16} className={formData.equipment.includes(item) ? 'opacity-100' : 'opacity-20'} />
+                    <span className="text-white">{item}</span>
+                    <Sword size={16} className={formData.equipment.includes(item) ? 'text-system-blue' : 'text-gray-700'} />
                   </button>
                 ))}
               </div>
@@ -294,7 +339,7 @@ export default function Onboarding() {
                       }`}
                     >
                       <div className="text-xs text-gray-500 mb-1">{opt.label}</div>
-                      <div className="font-bold text-xl">{opt.rank}-RANK</div>
+                      <div className="font-bold text-xl text-white">{opt.rank}-RANK</div>
                     </button>
                   ))}
                 </div>

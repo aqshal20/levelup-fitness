@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHunterStore } from '@/store/useHunterStore';
-import { CheckCircle2, Circle, ChevronLeft, Award, AlertTriangle, Skull, RotateCcw } from 'lucide-react';
+import { CheckCircle2, Circle, ChevronLeft, Award, AlertTriangle, Skull, RotateCcw, Zap } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Quests() {
@@ -39,12 +39,25 @@ export default function Quests() {
             </h1>
           </div>
           <button 
-            onClick={resetQuests}
+            onClick={() => { if(confirm("This will replace current quests with new ones. Proceed?")) resetQuests(); }}
             className="text-[10px] font-mono text-gray-600 hover:text-white flex items-center gap-1 uppercase tracking-widest"
           >
             <RotateCcw size={10} /> Reset Quests
           </button>
         </div>
+
+        {!isPenaltyActive && quests.length > 0 && !allCompleted && (
+          <Link href="/workout">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-4 mb-8 bg-gradient-to-r from-system-blue to-system-purple text-black font-bold system-font tracking-[0.2em] flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(0,234,255,0.3)]"
+            >
+              <Zap size={20} fill="currentColor" />
+              ENTER DUNGEON (START WORKOUT)
+            </motion.button>
+          </Link>
+        )}
 
         <AnimatePresence>
           {isPenaltyActive && (

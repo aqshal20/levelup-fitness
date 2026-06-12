@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚡️ LevelUp Fitness | The System
 
-## Getting Started
+Become the S-Rank version of yourself. **LevelUp Fitness** is a gamified home workout application inspired by the "Solo Leveling" series, designed to turn your real-world fitness journey into an immersive RPG experience.
 
-First, run the development server:
+![LevelUp Fitness Dashboard](public/window-preview.png) *(Placeholder for your screenshot)*
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ⚔️ Core Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. The Awakening (Onboarding)
+- **Initial Rank Assessment:** Determine your starting power level (E to B Rank).
+- **Body Analysis (BMI):** Real-time calculation of your Body Mass Index and health status (Ideal, Overweight, etc.).
+- **The Armory:** Select available equipment (Dumbbells, Pull-up bars) to tailor your quest list.
+- **The Great Quest:** Set long-term goals (Weight Loss, Muscle Building) with custom deadlines.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Status Window (Dashboard)
+- **Hunter Stats:** Track your Strength (STR), Agility (AGI), Vitality (VIT), and Intelligence (INT).
+- **Leveling System:** Gain XP through workouts. Every 100 XP grants +1 Level and 3 Stat Points.
+- **Rank Scaling:** Automatically rank up from E-Rank to the legendary S-Rank as you reach level milestones.
+- **Streak & Schedule:** Maintain your training streak and follow your personalized weekly schedule.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Daily Quests & Dungeon Mode
+- **Dynamic Quest Generation:** Quests are randomly generated daily based on your equipment, goals, and rank difficulty.
+- **Dungeon Clear (Integrated Workout):** A professional-grade workout engine that cycles through your daily quests with a Tabata-style timer.
+- **AI System Voice:** A commanding "System" voice (English) that guides you through exercises, rest phases, and mission completion.
 
-## Learn More
+### 4. Penalty System
+- **Survival Quest:** Failure to complete daily goals triggers the **Penalty Zone**, a high-stakes survival workout mode that locks regular system access until cleared.
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
+- **Frontend:** [Next.js 15](https://nextjs.org/) (App Router)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **State Management:** [Zustand](https://zustand-demo.pmnd.rs/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Persistence:** LocalStorage (Offline-first)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Local Development
+1. Clone the repository.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deploy on Vercel
+### Deployment (Vercel)
+1. Push your code to a GitHub repository.
+2. Connect your GitHub account to [Vercel](https://vercel.com).
+3. Import the project and click **Deploy**.
+4. Access your "System" anywhere, anytime from your mobile device.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*"The System has chosen you. Do not falter, Hunter."*

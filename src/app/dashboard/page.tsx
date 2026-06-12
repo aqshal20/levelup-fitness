@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useHunterStore } from '@/store/useHunterStore';
-import { Shield, Zap, Activity, Brain, Dumbbell, ChevronRight, PlusCircle, Target, Flame, Calendar, RefreshCw } from 'lucide-react';
+import { Shield, Zap, Activity, Brain, Dumbbell, ChevronRight, PlusCircle, Target, Flame, Calendar, RefreshCw, Scale } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Dashboard() {
-  const { name, level, rank, xp, stats, statPoints, allocateStat, goalType, targetDate, streak, trainingDays, resetSystem } = useHunterStore();
+  const { name, level, rank, xp, stats, statPoints, allocateStat, goalType, targetDate, streak, trainingDays, resetSystem, bmi, bmiStatus, weight, height } = useHunterStore();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -84,6 +84,7 @@ export default function Dashboard() {
       </motion.div>
 
       <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        {/* Main Stats Card */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -121,11 +122,23 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
+        {/* Motivation Side Card */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="space-y-6"
         >
+          {/* BMI Card */}
+          <div className="glass-panel p-6 border-system-blue/20 flex items-center justify-between group">
+            <div>
+              <div className="text-[10px] uppercase font-mono text-gray-500 mb-1 tracking-[0.2em]">Body Analysis</div>
+              <div className={`text-xl font-bold system-font ${bmiStatus === 'IDEAL' ? 'text-green-500' : 'text-yellow-500'}`}>{bmiStatus}</div>
+              <div className="text-[10px] text-gray-600 font-mono mt-1">BMI: {bmi} | {weight}kg / {height}cm</div>
+            </div>
+            <Scale className="w-8 h-8 text-gray-700 group-hover:text-system-blue transition-colors" />
+          </div>
+
+          {/* Streak Card */}
           <div className="glass-panel p-6 border-orange-500/30 flex items-center justify-between relative overflow-hidden group">
             <div className="absolute -bottom-2 -right-2 opacity-5 group-hover:opacity-10 transition-opacity">
                <Flame size={80} />
@@ -137,6 +150,7 @@ export default function Dashboard() {
             <Flame className="w-10 h-10 text-orange-500 animate-bounce" />
           </div>
 
+          {/* Training Schedule */}
           <div className="glass-panel p-6">
             <div className="flex items-center gap-2 mb-4">
               <Calendar size={14} className="text-system-blue" />
@@ -160,6 +174,7 @@ export default function Dashboard() {
         </motion.div>
       </div>
 
+      {/* The Great Quest (Long term Goal) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -185,6 +200,7 @@ export default function Dashboard() {
         </div>
       </motion.div>
 
+      {/* Quick Actions / Quests */}
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <motion.div 
           whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
@@ -207,10 +223,10 @@ export default function Dashboard() {
           className="glass-panel p-8 relative overflow-hidden group cursor-pointer border-system-purple/30 transition-all"
         >
           <h3 className="font-bold system-font text-lg tracking-wider mb-2 text-system-purple uppercase">DUNGEON (WORKOUT)</h3>
-          <p className="text-gray-400 text-sm mb-6">Enter combat training sequence.</p>
+          <p className="text-gray-400 text-sm mb-6">Execute your daily quest sequence with the System Timer.</p>
           <Link href="/workout">
             <button className="flex items-center gap-2 text-system-purple font-mono text-xs uppercase tracking-[0.2em] group-hover:gap-4 transition-all">
-              Initialize Dungeon <ChevronRight size={14} />
+              Initialize Sequence <ChevronRight size={14} />
             </button>
           </Link>
         </motion.div>
